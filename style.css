@@ -1,0 +1,112 @@
+html, body {
+    background: linear-gradient(180deg, #222, #111);
+    margin: 0;
+    height:700px;
+    min-height: 100%;
+}
+
+
+/*
+* Header Content.
+*/
+.head-container {
+    width: 500px;
+    margin-inline: auto;
+    align-content: center;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.head-container h1, .head-container p {
+    color: aliceblue;
+    margin-inline: auto;
+
+}
+
+h1 {
+    font-size: 48px;
+    margin-bottom: 0px;
+}
+
+p {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 200;
+}
+
+
+/*
+* Game board content.
+*/
+.board {
+    background-color: black;
+     width: 300px;
+    height: 300px; 
+    margin-inline: auto;
+    display: grid;
+    gap: 4px;
+    grid-template-columns: auto auto auto;
+    box-shadow: 10px 10px 19px #0008;
+}
+
+.slot {
+    background-color: #111E;
+    display: inline-grid;
+    text-align: center;
+    max-width: inherit;
+    max-height: inherit;
+    min-height: 0;
+    min-width: 0;
+    overflow: hidden;
+    padding: 0px 0px;
+}
+
+.slot:hover {
+    background-color: #333E;
+    align-items: auto;
+}
+
+.slot:active {
+    background-color: #444E;
+}
+
+.slot svg {
+    margin-bottom: 0px;
+    border: 2px solid white;
+}
+
+
+/*
+* Bottom menu content
+*/
+.menu-container {
+    width: 300px;
+    margin-inline: auto;
+    text-align: center;
+    margin-top: 70px;
+}
+
+.begin {
+    width: 150px;
+    height: 40px;
+    font-family: Tahoma;
+    font-weight: 500;
+    font-size: 16px;
+    color: aliceblue;
+    border: 2px solid aliceblue;
+    background-color: #1113;
+    box-shadow: 5px 5px 10px 5px #0007;
+    border-radius: 100px;
+    margin-top: 0;
+}
+
+.begin:hover {
+    color: rgb(184, 224, 255);
+    border-color:rgb(184, 224, 255);
+}
+
+.begin:active {
+    color: rgb(225, 241, 255);
+    border-color:rgb(225, 241, 255);
+}
+
+
