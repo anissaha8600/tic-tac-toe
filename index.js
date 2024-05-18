@@ -1,19 +1,33 @@
 // get button to start game
 const btn = document.getElementById("begin-btn");
-btn.addEventListener()
+btn.addEventListener();
 
-// in code board representation (avoid unececcary html element checking)
-board = {}
+// in code board representation 
+// (avoid unececcary html element checking)
+board = {};
 for (i=1; i<10; i++) {
     board[`s${i}`] = '';
 }
 
-/* Game Slots */
-const slots = {};
-document.getElementsByClassName("slot").forEach(s => {
-    // add event listeners for each board slot
+// constant for possible game states
+const GAMESTATES = {
+    'pregame' : 'pregame',
+    'running' : 'running',
+    'over' : 'over'
+};
 
-});
+// curr state variables for game 
+state = {
+    board : board,
+    gameState : GAMESTATES.pregame,
+    player : null
+};
+
+// get html elements for board
+slots = {};
+for (i=1; i<10; i++) {
+    slots[i] = document.getElementById(`s${i}`);
+}
 
 /* all possible fill conditions of the 
 same colour which lead to victory */
