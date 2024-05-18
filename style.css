@@ -52,12 +52,12 @@ p {
     background-color: #111E;
     display: inline-grid;
     text-align: center;
-    max-width: inherit;
-    max-height: inherit;
-    min-height: 0;
-    min-width: 0;
+    width: 100px;
+    height: 100px;
     overflow: hidden;
     padding: 0px 0px;
+    justify-content: center;
+    align-items: center;
 }
 
 .slot:hover {
@@ -71,7 +71,6 @@ p {
 
 .slot svg {
     margin-bottom: 0px;
-    border: 2px solid white;
     width: 50px;
     height: auto;
     margin: 0;
