@@ -72,6 +72,9 @@ p {
 .slot svg {
     margin-bottom: 0px;
     border: 2px solid white;
+    width: 50px;
+    height: auto;
+    margin: 0;
 }
 
 

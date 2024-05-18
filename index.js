@@ -1,7 +1,3 @@
-// get button to start game
-const btn = document.getElementById("begin-btn");
-btn.addEventListener();
-
 // in code board representation 
 // (avoid unececcary html element checking)
 board = {};
@@ -17,17 +13,24 @@ const GAMESTATES = {
 };
 
 // curr state variables for game 
-state = {
+appState = {
     board : board,
     gameState : GAMESTATES.pregame,
-    player : null
+    player : null,
+    numPlayers : 2
 };
 
 // get html elements for board
-slots = {};
-for (i=1; i<10; i++) {
-    slots[i] = document.getElementById(`s${i}`);
+const slots = [];
+for (let i=1; i<10; i++) {
+    const div = document.getElementById(`s${i}`);
+    slots.push(div);
+    div.addEventListener('click', () => {clickBoardSlot(div)});
 }
+
+// add event listener for start button
+document.getElementById("begin-btn")
+    .addEventListener('click', beginGame);
 
 /* all possible fill conditions of the 
 same colour which lead to victory */
@@ -49,14 +52,14 @@ const victoryConditions = [
 
 /* convert player variable into svg class name */
 const playerMap = {
-    true : 'x',
-    false : 'o'
+    0 : 'x',
+    1 : 'o'
 };
 
 /* convert player id to svg element for game */
 const playerToSVG = {
-    true : '<svg id="eiV5f1XjtR71" class="x" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 300 300" shape-rendering="geometricPrecision" text-rendering="geometricPrecision"><rect width="300" height="25.664356" rx="0" ry="0" transform="matrix(.707107 0.707107-.731799 0.682414 53.324565 35.177124)" fill="#1664ff" stroke-width="0"/><rect width="300" height="25.664356" rx="0" ry="0" transform="matrix(.707107-.707107 0.682414 0.731799 35.177124 246.675436)" fill="#1664ff" stroke-width="0"/></svg>',    
-    false : '<svg id="eWzTBC8scxg1" class="o" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 300 300" shape-rendering="geometricPrecision" text-rendering="geometricPrecision"><ellipse rx="125" ry="125" transform="translate(150 150)" fill="none" stroke="#ff2828" stroke-width="22"/></svg>'
+    0 : '<svg id="eiV5f1XjtR71" class="x" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 300 300" shape-rendering="geometricPrecision" text-rendering="geometricPrecision"><rect width="300" height="25.664356" rx="0" ry="0" transform="matrix(.707107 0.707107-.731799 0.682414 53.324565 35.177124)" fill="#1664ff" stroke-width="0"/><rect width="300" height="25.664356" rx="0" ry="0" transform="matrix(.707107-.707107 0.682414 0.731799 35.177124 246.675436)" fill="#1664ff" stroke-width="0"/></svg>',    
+    1 : '<svg id="eWzTBC8scxg1" class="o" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 300 300" shape-rendering="geometricPrecision" text-rendering="geometricPrecision"><ellipse rx="125" ry="125" transform="translate(150 150)" fill="none" stroke="#ff2828" stroke-width="22"/></svg>'
 }
 
 /**
@@ -67,26 +70,65 @@ const playerToSVG = {
  */
 function checkVictory(player) {
 
+    console.log("checking victory: ", appState);
+
     // get svg class corresponding to current player
     svgClassName = playerMap[player];
 
     // iterate through victory conditions and check to see if any are met
+    let hasWon = true;
     for (cond of victoryConditions) {
         hasWon = true;
 
         // check individual victory condition
         for (pos of cond) {
-            if (!checkSlotSvg(pos, svgClassName)) {
+            console.log(pos, cond, hasWon);
+            if (appState.board[`s${pos}`] !== player) {
                 hasWon = false;
                 break;
             }
         }
 
         // early return if win condition met
-        if (hasWon) return hasWon; 
+        if (hasWon) {
+            console.log(cond);
+            return hasWon;
+        } 
     }
 
     return hasWon;
+}
+
+/**
+ * Register click on board 
+ * 
+ * @param {HTMLDivElement} slot - the tic-tac-toe slot clicked by user
+ */
+function clickBoardSlot(slot) {
+
+    console.log("board slot clicked.", slot, appState);
+
+    // no effect if game not running or slot filled already
+    if (appState.gameState != GAMESTATES.running ||
+        slot.innerHTML != '') {
+            return;
+    }
+
+    // fill slot with svg appropriate for player
+    slot.innerHTML = playerToSVG[appState.player];
+    slot.classList.remove('hover');
+    board[slot.id] = appState.player;
+
+    // check victory then switch player
+    if (checkVictory(appState.player)) {
+        appState.gameState = GAMESTATES.over;
+        return;
+    }
+
+    // switch player
+    appState.player += 1;
+    appState.player %= appState.numPlayers;
+
 }
 
 
@@ -115,30 +157,25 @@ function checkSlotSvg(boardPos, className) {
  */
 function clearBoard() {
 
-    // clear board slots
-    document.getElementsByClassName("slot").array.forEach(element => {
+    // clear svgs from board slot divs and app state board
+    slots.forEach(element => {
         element.innerHTML = "";
+        appState.board[element.id] = "";
     });
 }
 
 /**
- * Take turn for player
+ * Begin tic-tac-toe game
  */
-function takeTurn() {
-
-}
-
 function beginGame() {
-    playerTurn = false;
+
+    console.log("game started.", appState);
+    console.log("slots:", slots);
     clearBoard();
+    console.log("board cleared");
 
-    // let players take turns untill player has won
-    do {
-        playerTurn = !playerTurn; // switch player
-        takeTurn();
-
-    } while (!checkVictory(player))
-
+    appState.player = 0;
+    appState.gameState = GAMESTATES.running;
 
 }
 
