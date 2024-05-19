@@ -12,12 +12,30 @@ const GAMESTATES = {
     'over' : 'over'
 };
 
+// winner message
+const winnerHeader = document.getElementById('winner-status');
+
+/* possible messages at end of game */
+const WINNER_MESSAGES = {
+    0 : 'Blue Wins!',
+    1 : 'Red Wins!',
+    null : 'Tie Game!'
+};
+
+const WINNER_CSS = {
+    0 : 'winner-blue',
+    1 : 'winner-red',
+    null : 'winner-tie',
+    none : 'winner-none'
+}
+
 // curr state variables for game 
 appState = {
     board : board,
     gameState : GAMESTATES.pregame,
     player : null,
-    numPlayers : 2
+    numPlayers : 2,
+    winner : null
 };
 
 // get html elements for board
@@ -50,6 +68,12 @@ const victoryConditions = [
     [3, 5, 7]
 ];
 
+/* available victories (will be removed when no longer possible in game)*/
+availableVictories = {};
+for (i = 0; i<victoryConditions.length; i++) {
+    availableVictories[i] = true;
+}
+
 /* convert player variable into svg class name */
 const playerMap = {
     0 : 'x',
@@ -70,33 +94,61 @@ const playerToSVG = {
  */
 function checkVictory(player) {
 
-    console.log("checking victory: ", appState);
-
-    // get svg class corresponding to current player
-    svgClassName = playerMap[player];
+    console.log("checking victory: ", appState, availableVictories);
 
     // iterate through victory conditions and check to see if any are met
     let hasWon = true;
-    for (cond of victoryConditions) {
-        hasWon = true;
+    for (let vicId of Object.keys(availableVictories)) {
 
-        // check individual victory condition
-        for (pos of cond) {
-            console.log(pos, cond, hasWon);
+        hasWon = true;
+        // check each board position for victory cond
+        for (pos of victoryConditions[vicId]) {
             if (appState.board[`s${pos}`] !== player) {
                 hasWon = false;
                 break;
             }
         }
 
-        // early return if win condition met
-        if (hasWon) {
-            console.log(cond);
-            return hasWon;
-        } 
+        // early return if victorious
+        if (hasWon) return true;
+        
     }
 
-    return hasWon;
+    return false; // no victory conditions met
+}
+
+/**
+ * Check if game is tied 
+ * @returns {boolean} iff game is no longer winnable by either player
+ */
+function checkTie() {
+    
+    for (let vicId of Object.keys(availableVictories)) {
+
+        const seen = []; // seen players on a row, col or diagonal
+        for(pos of victoryConditions[vicId]) {
+
+            // check player at position
+            const val = appState.board[`s${pos}`];
+            if (val !== '' && !seen.includes(val)) {
+                seen.push(val);
+            }
+
+            // victory no longer available
+            if (seen.length > 1) {
+                delete availableVictories[vicId];
+                break;
+            }
+        }   
+    }
+
+    // tie if no victory options available
+    if (Object.keys(availableVictories).length == 0) {
+        appState.gameState = GAMESTATES.over;
+        return true;
+    }
+
+    return false;
 }
 
 /**
@@ -106,7 +158,7 @@ function checkVictory(player) {
  */
 function clickBoardSlot(slot) {
 
-    console.log("board slot clicked.", slot, appState);
+    console.log("board slot clicked.", slot, appState, availableVictories);
 
     // no effect if game not running or slot filled already
     if (appState.gameState != GAMESTATES.running ||
@@ -116,12 +168,26 @@ function clickBoardSlot(slot) {
 
     // fill slot with svg appropriate for player
     slot.innerHTML = playerToSVG[appState.player];
-    slot.classList.remove('hover');
+    slot.classList.remove('slot');
+    slot.classList.add('slot-filled');
     board[slot.id] = appState.player;
 
-    // check victory then switch player
-    if (checkVictory(appState.player)) {
+    // check for tie 
+    if (checkTie()) {
         appState.gameState = GAMESTATES.over;
+    }
+
+    // check victory then switch player (loser goes first)
+    if (appState.gameState !== GAMESTATES.over &&
+        checkVictory(appState.player)) {
+        appState.gameState = GAMESTATES.over;
+        appState.winner = appState.player;
+    }
+
+    if (appState.gameState === GAMESTATES.over) {
+        winnerHeader.innerHTML = WINNER_MESSAGES[appState.winner];
+        winnerHeader.classList.remove("winner-none");
+        winnerHeader.classList.add(WINNER_CSS[appState.winner]);
         return;
     }
 
@@ -138,7 +204,7 @@ function clickBoardSlot(slot) {
  * 
  * @param {int} boardPos - position on tic-tac-toe board in [1, 9]
  * @param {string} className - classname of svg element in board slot ('x' or 'o')
- * @returns {boolean} - returns true iff div slot at boardPos contains an svg element with classname className
+ * @returns {boolean} returns true iff div slot at boardPos contains an svg element with classname className
  */
 function checkSlotSvg(boardPos, className) {
 
@@ -161,7 +227,18 @@ function clearBoard() {
     slots.forEach(element => {
         element.innerHTML = "";
         appState.board[element.id] = "";
+        element.classList.remove("slot-filled");
+        element.classList.add("slot");
     });
+
+    // empty board means all victory positions are available
+    for (i=0; i<victoryConditions.length; i++) {
+        availableVictories[i] = true;
+    }
+
+    winnerHeader.classList = ['winner-none']; // hide winner status msg
+
+    appState.winner = null; // unset winner
 }
 
 /**

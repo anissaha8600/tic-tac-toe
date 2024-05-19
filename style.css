@@ -33,6 +33,37 @@ p {
     font-weight: 200;
 }
 
+.winner-red {
+    color: rgb(243, 110, 110);
+    margin-bottom: -40px;
+    margin-top: 100px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-weight: 200;
+}
+
+.winner-blue {
+    color: rgb(94, 94, 255);
+    margin-bottom: -40px;
+    margin-top: 100px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-weight: 200;
+}
+
+.winner-tie {
+    color: aliceblue;
+    margin-bottom: -40px;
+    margin-top: 100px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-weight: 200;
+}
+
+.winner-none {
+    color: #0000;
+    margin-bottom: -40px;
+    margin-top: 100px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-weight: 200;
+}
 
 /*
 * Game board content.
@@ -48,7 +79,7 @@ p {
     box-shadow: 10px 10px 19px #0008;
 }
 
-.slot {
+.slot, .slot-filled {
     background-color: #111E;
     display: inline-grid;
     text-align: center;
@@ -69,11 +100,12 @@ p {
     background-color: #444E;
 }
 
-.slot svg {
+.slot-filled svg {
     margin-bottom: 0px;
     width: 50px;
     height: auto;
     margin: 0;
+    transition: all 0.3s ease;
 }
 
 
