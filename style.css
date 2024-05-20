@@ -25,7 +25,7 @@ html, body {
 
 h1 {
     font-size: 48px;
-    margin-bottom: 0px;
+    margin-bottom: -5px;
 }
 
 p {
@@ -33,36 +33,43 @@ p {
     font-weight: 200;
 }
 
+#strong-html {
+    color: rgb(255, 68, 0);
+}
+#strong-css {
+    color: rgb(0, 191, 255);
+}
+#strong-js {
+    color: yellow;
+}
+
+/* end game status msg */
+.winner-blue, .winner-red,
+.winner-none, .winner-tie {
+    margin-bottom: -40px;
+    margin-top: 70px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-weight: 200;
+}
+
+/* status when red wins game */
 .winner-red {
     color: rgb(243, 110, 110);
-    margin-bottom: -40px;
-    margin-top: 100px;
-    font-family: Georgia, 'Times New Roman', Times, serif;
-    font-weight: 200;
 }
 
+/* status when blue wins game */
 .winner-blue {
     color: rgb(94, 94, 255);
-    margin-bottom: -40px;
-    margin-top: 100px;
-    font-family: Georgia, 'Times New Roman', Times, serif;
-    font-weight: 200;
 }
 
+/* status when game ends in tie */
 .winner-tie {
     color: aliceblue;
-    margin-bottom: -40px;
-    margin-top: 100px;
-    font-family: Georgia, 'Times New Roman', Times, serif;
-    font-weight: 200;
 }
 
+/* hide status while game running */
 .winner-none {
     color: #0000;
-    margin-bottom: -40px;
-    margin-top: 100px;
-    font-family: Georgia, 'Times New Roman', Times, serif;
-    font-weight: 200;
 }
 
 /*
@@ -70,17 +77,20 @@ p {
 */
 .board {
     background-color: black;
-     width: 300px;
-    height: 300px; 
+    width: 314px;
+    height: 314px; 
     margin-inline: auto;
     display: grid;
-    gap: 4px;
+    gap: 2px;
     grid-template-columns: auto auto auto;
     box-shadow: 10px 10px 19px #0008;
+    border: 2px solid black;
 }
 
-.slot, .slot-filled {
-    background-color: #111E;
+/* slots of game board */
+.slot, .slot-filled,
+.slot-winner-blue, 
+.slot-winner-red {
     display: inline-grid;
     text-align: center;
     width: 100px;
@@ -89,6 +99,11 @@ p {
     padding: 0px 0px;
     justify-content: center;
     align-items: center;
+    border-radius: 10px;
+}
+
+.slot, .slot-filled {
+    background-color: #111E;
 }
 
 .slot:hover {
@@ -100,12 +115,24 @@ p {
     background-color: #444E;
 }
 
-.slot-filled svg {
+/* slot containing an 'x' or 'o' */
+.slot-filled svg,
+.slot-winner-red svg,
+.slot-winner-blue svg {
     margin-bottom: 0px;
     width: 50px;
     height: auto;
     margin: 0;
     transition: all 0.3s ease;
+}
+
+/* slots that contain winning row / col / diagonal */
+.slot-winner-blue {
+    background: radial-gradient(rgba(0, 0, 255, 0.505) 10%, #111E);
+}
+
+.slot-winner-red {
+    background: radial-gradient(rgba(255, 0, 0, 0.505) 10%, #111E);
 }
 
 
@@ -126,7 +153,7 @@ p {
     font-weight: 500;
     font-size: 16px;
     color: aliceblue;
-    border: 2px solid aliceblue;
+    border: 2px solid rgba(240, 248, 255, 0.34);
     background-color: #1113;
     box-shadow: 5px 5px 10px 5px #0007;
     border-radius: 100px;

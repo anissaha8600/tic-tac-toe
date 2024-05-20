@@ -86,11 +86,14 @@ const playerToSVG = {
     1 : '<svg id="eWzTBC8scxg1" class="o" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 300 300" shape-rendering="geometricPrecision" text-rendering="geometricPrecision"><ellipse rx="125" ry="125" transform="translate(150 150)" fill="none" stroke="#ff2828" stroke-width="22"/></svg>'
 }
 
+// start game immediately
+window.addEventListener('DOMContentLoaded', beginGame);
+
 /**
  * Given a player, return true iff player has met a victory condition
  * 
  * @param {boolean} player - player to check victory condition for
- * @return {boolean} - true iff player has one
+ * @return {Array<int> | false} - return the victory condition met if won, otherwise return false
  */
 function checkVictory(player) {
 
@@ -110,7 +113,7 @@ function checkVictory(player) {
         }
 
         // early return if victorious
-        if (hasWon) return true;
+        if (hasWon) return victoryConditions[vicId];
         
     }
 
@@ -151,6 +154,29 @@ function checkTie() {
     return false;
 }
 
+
+/**
+ * Given a victory condition, highlight each position on the game board with a glow appropriate to winner colour.
+ * 
+ * @param {int} player - player who won
+ * @param {Array<int>} cond - 3 element array of slots corresponding to row, column or diagonal which matched x's or o's
+ */
+function highlightWinSlots(player, cond) {
+    
+    // first convert positions to 0-index instead of 1-index 
+    // so we can pull divs from our list...
+    //
+    // then denote slot as winner so we can make it glow in css.
+    cond.map(pos => pos-1)
+        .forEach(slotId => {
+            const slot = slots[slotId];
+            slot.classList.remove("slot-filled");
+            slot.classList.add(`slot-${WINNER_CSS[player]}`); 
+        });
+
+    console.log(slots);
+}
+
 /**
  * Register click on board 
  * 
@@ -178,10 +204,12 @@ function clickBoardSlot(slot) {
     }
 
     // check victory then switch player (loser goes first)
+    const cond = checkVictory(appState.player);
     if (appState.gameState !== GAMESTATES.over &&
-        checkVictory(appState.player)) {
+        cond) {
         appState.gameState = GAMESTATES.over;
         appState.winner = appState.player;
+        highlightWinSlots(appState.winner, cond);
     }
 
     if (appState.gameState === GAMESTATES.over) {
@@ -199,26 +227,6 @@ function clickBoardSlot(slot) {
 
 
 /**
- * returns true iff div slot at boardPos contains an svg 
- * element with classname className
- * 
- * @param {int} boardPos - position on tic-tac-toe board in [1, 9]
- * @param {string} className - classname of svg element in board slot ('x' or 'o')
- * @returns {boolean} returns true iff div slot at boardPos contains an svg element with classname className
- */
-function checkSlotSvg(boardPos, className) {
-
-    // get div of board slot specified
-    div = document.getElementById(`s${boardPos}`);
-
-    // check if div contains svg with specified classname
-    return div.childNodes && 
-        div.childNodes[0].nodeName === 'svg' &&
-        div.childNodes[0].classList.contains(className);
-
-}
-
-/**
  * Clears board for new game
  */
 function clearBoard() {
@@ -228,6 +236,7 @@ function clearBoard() {
         element.innerHTML = "";
         appState.board[element.id] = "";
         element.classList.remove("slot-filled");
+        element.classList.remove(`slot-${WINNER_CSS[appState.winner]}`);
         element.classList.add("slot");
     });
 
@@ -240,6 +249,7 @@ function clearBoard() {
 
     appState.winner = null; // unset winner
 }
+
 
 /**
  * Begin tic-tac-toe game
