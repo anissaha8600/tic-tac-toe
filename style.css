@@ -1,5 +1,5 @@
 html, body {
-    background: linear-gradient(180deg, #222, #111);
+    background: linear-gradient(180deg, #130122, #0c0012);
     margin: 0;
     height:700px;
     min-height: 100%;
@@ -43,25 +43,25 @@ p {
     color: yellow;
 }
 
+#status-container {
+    justify-content: center;
+    width: 150px;
+    height: 30px;
+    margin-inline: auto;
+    margin-top: 50px;
+    margin-bottom: -45px;
+}
+
 /* end game status msg */
 .winner-blue, .winner-red,
 .winner-none, .winner-tie {
-    margin-bottom: -40px;
-    margin-top: 70px;
+    padding: 10px 20px;
+    margin: auto;
     font-family: Georgia, 'Times New Roman', Times, serif;
     font-weight: 200;
 }
 
 /* status when red wins game */
-.winner-red {
-    color: rgb(243, 110, 110);
-}
-
-/* status when blue wins game */
-.winner-blue {
-    color: rgb(94, 94, 255);
-}
-
 /* status when game ends in tie */
 .winner-tie {
     color: aliceblue;
@@ -85,6 +85,7 @@ p {
     grid-template-columns: auto auto auto;
     box-shadow: 10px 10px 19px #0008;
     border: 2px solid black;
+    border-radius: 8px;
 }
 
 /* slots of game board */
@@ -103,7 +104,7 @@ p {
 }
 
 .slot, .slot-filled {
-    background-color: #111E;
+    background-color: rgba(79, 40, 104, 0.379);
 }
 
 .slot:hover {
@@ -126,13 +127,17 @@ p {
     transition: all 0.3s ease;
 }
 
+.slot-filled {
+    background: radial-gradient(black 20%, rgba(79, 40, 104, 0.379));
+}
+
 /* slots that contain winning row / col / diagonal */
 .slot-winner-blue {
-    background: radial-gradient(rgba(0, 0, 255, 0.505) 10%, #111E);
+    background: radial-gradient(rgba(0, 0, 255, 0.505) 20%, #111E, #111E);
 }
 
 .slot-winner-red {
-    background: radial-gradient(rgba(255, 0, 0, 0.505) 10%, #111E);
+    background: radial-gradient(rgba(255, 0, 0, 0.295), rgba(255, 0, 0, 0.505), #111E 60%, #111E);
 }
 
 
@@ -161,8 +166,7 @@ p {
 }
 
 .begin:hover {
-    color: rgb(184, 224, 255);
-    border-color:rgb(184, 224, 255);
+    color: rgb(255, 255, 123);
 }
 
 .begin:active {

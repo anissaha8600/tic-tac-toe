@@ -35,7 +35,11 @@ appState = {
     gameState : GAMESTATES.pregame,
     player : null,
     numPlayers : 2,
-    winner : null
+    winner : null,
+    score: {
+        0: 0,
+        1: 0
+    }
 };
 
 // get html elements for board
@@ -177,6 +181,14 @@ function highlightWinSlots(player, cond) {
     console.log(slots);
 }
 
+function updateScore(player) {
+    let score = appState.score;
+    score[player] += 1;
+
+    // display score on bottom
+    console.log("score: ", score);
+}
+
 /**
  * Register click on board 
  * 
@@ -210,6 +222,7 @@ function clickBoardSlot(slot) {
         appState.gameState = GAMESTATES.over;
         appState.winner = appState.player;
         highlightWinSlots(appState.winner, cond);
+        updateScore(appState.winner);
     }
 
     if (appState.gameState === GAMESTATES.over) {
